@@ -37,7 +37,7 @@ module.exports = function(bookshelf, options) {
                 'callbacks': callbacks
             }, self);
             this._stateMachineCreated = true;
-            var uniqueEvents = _.unique(_.pluck(events, 'name'));
+            var uniqueEvents = _.uniq(_.map(events, 'name'));
             _.each(uniqueEvents, function(e) {
                 var transitions = _.filter(events, {
                     'name': e
@@ -47,9 +47,9 @@ module.exports = function(bookshelf, options) {
                     var args = _.toArray(arguments);
                     return new Promise(function(resolve, reject) {
                         if (self._activeTransition) return reject('Model is currently in the middle of a transition');
-                        var thisTransition = _.findWhere(transitions, function(transition) {
+                        var thisTransition = _.find(transitions, function(transition) {
                             if (_.isArray(transition.from)) {
-                              return _.contains(transition.from, self.get('state'));
+                              return _.includes(transition.from, self.get('state'));
                             }
 
                             return transition.from === self.get('state');
